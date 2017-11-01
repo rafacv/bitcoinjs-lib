@@ -3,7 +3,6 @@ var bcrypto = require('./crypto')
 var bscript = require('./script')
 var bufferutils = require('./bufferutils')
 var opcodes = require('bitcoin-ops')
-var typeforce = require('typeforce')
 var types = require('./types')
 var varuint = require('varuint-bitcoin')
 
@@ -142,7 +141,6 @@ Transaction.fromHex = function (hex) {
 }
 
 Transaction.isCoinbaseHash = function (buffer) {
-  typeforce(types.Hash256bit, buffer)
   for (var i = 0; i < 32; ++i) {
     if (buffer[i] !== 0) return false
   }
@@ -154,14 +152,7 @@ Transaction.prototype.isCoinbase = function () {
 }
 
 Transaction.prototype.addInput = function (hash, index, sequence, scriptSig) {
-  typeforce(types.tuple(
-    types.Hash256bit,
-    types.UInt32,
-    types.maybe(types.UInt32),
-    types.maybe(types.Buffer)
-  ), arguments)
-
-  if (types.Null(sequence)) {
+  if (sequence == null) {
     sequence = Transaction.DEFAULT_SEQUENCE
   }
 
@@ -176,8 +167,6 @@ Transaction.prototype.addInput = function (hash, index, sequence, scriptSig) {
 }
 
 Transaction.prototype.addOutput = function (scriptPubKey, value) {
-  typeforce(types.tuple(types.Buffer, types.Satoshi), arguments)
-
   // Add the output and return the output's index
   return (this.outs.push({
     script: scriptPubKey,
@@ -252,8 +241,6 @@ Transaction.prototype.clone = function () {
  * This hash can then be used to sign the provided transaction input.
  */
 Transaction.prototype.hashForSignature = function (inIndex, prevOutScript, hashType) {
-  typeforce(types.tuple(types.UInt32, types.Buffer, /* types.UInt8 */ types.Number), arguments)
-
   // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L29
   if (inIndex >= this.ins.length) return ONE
 
@@ -317,8 +304,6 @@ Transaction.prototype.hashForSignature = function (inIndex, prevOutScript, hashT
 }
 
 Transaction.prototype.hashForWitnessV0 = function (inIndex, prevOutScript, value, hashType) {
-  typeforce(types.tuple(types.UInt32, types.Buffer, types.Satoshi, types.UInt32), arguments)
-
   var tbuffer, toffset
   function writeSlice (slice) { toffset += slice.copy(tbuffer, toffset) }
   function writeUInt32 (i) { toffset = tbuffer.writeUInt32LE(i, toffset) }
@@ -478,14 +463,10 @@ Transaction.prototype.toHex = function () {
 }
 
 Transaction.prototype.setInputScript = function (index, scriptSig) {
-  typeforce(types.tuple(types.Number, types.Buffer), arguments)
-
   this.ins[index].script = scriptSig
 }
 
 Transaction.prototype.setWitness = function (index, witness) {
-  typeforce(types.tuple(types.Number, [types.Buffer]), arguments)
-
   this.ins[index].witness = witness
 }
 

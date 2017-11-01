@@ -2,7 +2,6 @@ var Buffer = require('safe-buffer').Buffer
 var base58check = require('bs58check')
 var bcrypto = require('./crypto')
 var createHmac = require('create-hmac')
-var typeforce = require('typeforce')
 var types = require('./types')
 var NETWORKS = require('./networks')
 
@@ -13,7 +12,6 @@ var ecurve = require('ecurve')
 var curve = ecurve.getCurveByName('secp256k1')
 
 function HDNode (keyPair, chainCode) {
-  typeforce(types.tuple('ECPair', types.Buffer256bit), arguments)
 
   if (!keyPair.compressed) throw new TypeError('BIP32 only allows compressed keyPairs')
 
@@ -29,7 +27,6 @@ HDNode.LENGTH = 78
 HDNode.MASTER_SECRET = Buffer.from('Bitcoin seed', 'utf8')
 
 HDNode.fromSeedBuffer = function (seed, network) {
-  typeforce(types.tuple(types.Buffer, types.maybe(types.Network)), arguments)
 
   if (seed.length < 16) throw new TypeError('Seed should be at least 128 bits')
   if (seed.length > 64) throw new TypeError('Seed should be at most 512 bits')
@@ -204,7 +201,6 @@ HDNode.prototype.toBase58 = function (__isPrivate) {
 
 // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#child-key-derivation-ckd-functions
 HDNode.prototype.derive = function (index) {
-  typeforce(types.UInt32, index)
 
   var isHardened = index >= HDNode.HIGHEST_BIT
   var data = Buffer.allocUnsafe(37)
@@ -277,7 +273,6 @@ HDNode.prototype.derive = function (index) {
 }
 
 HDNode.prototype.deriveHardened = function (index) {
-  typeforce(types.UInt31, index)
 
   // Only derives hardened private keys by default
   return this.derive(index + HDNode.HIGHEST_BIT)
@@ -290,7 +285,6 @@ HDNode.prototype.isNeutered = function () {
 }
 
 HDNode.prototype.derivePath = function (path) {
-  typeforce(types.BIP32Path, path)
 
   var splitPath = path.split('/')
   if (splitPath[0] === 'm') {
