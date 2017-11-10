@@ -1,6 +1,5 @@
 var Buffer = require('safe-buffer').Buffer
 var createHmac = require('create-hmac')
-var typeforce = require('typeforce')
 var types = require('./types')
 
 var BigInteger = require('bigi')
@@ -14,12 +13,6 @@ var secp256k1 = ecurve.getCurveByName('secp256k1')
 
 // https://tools.ietf.org/html/rfc6979#section-3.2
 function deterministicGenerateK (hash, x, checkSig) {
-  typeforce(types.tuple(
-    types.Hash256bit,
-    types.Buffer256bit,
-    types.Function
-  ), arguments)
-
   // Step A, ignored as hash already provided
   // Step B
   // Step C
@@ -75,8 +68,6 @@ function deterministicGenerateK (hash, x, checkSig) {
 var N_OVER_TWO = secp256k1.n.shiftRight(1)
 
 function sign (hash, d) {
-  typeforce(types.tuple(types.Hash256bit, types.BigInt), arguments)
-
   var x = d.toBuffer(32)
   var e = BigInteger.fromBuffer(hash)
   var n = secp256k1.n
@@ -106,12 +97,6 @@ function sign (hash, d) {
 }
 
 function verify (hash, signature, Q) {
-  typeforce(types.tuple(
-    types.Hash256bit,
-    types.ECSignature,
-    types.ECPoint
-  ), arguments)
-
   var n = secp256k1.n
   var G = secp256k1.G
 

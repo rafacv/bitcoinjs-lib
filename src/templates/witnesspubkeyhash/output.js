@@ -2,7 +2,6 @@
 
 var bscript = require('../../script')
 var types = require('../../types')
-var typeforce = require('typeforce')
 var OPS = require('bitcoin-ops')
 
 function check (script) {
@@ -15,14 +14,10 @@ function check (script) {
 check.toJSON = function () { return 'Witness pubKeyHash output' }
 
 function encode (pubKeyHash) {
-  typeforce(types.Hash160bit, pubKeyHash)
-
   return bscript.compile([OPS.OP_0, pubKeyHash])
 }
 
 function decode (buffer) {
-  typeforce(check, buffer)
-
   return buffer.slice(2)
 }
 

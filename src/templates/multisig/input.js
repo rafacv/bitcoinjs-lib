@@ -3,7 +3,6 @@
 var Buffer = require('safe-buffer').Buffer
 var bscript = require('../../script')
 var p2mso = require('./output')
-var typeforce = require('typeforce')
 var OPS = require('bitcoin-ops')
 
 function partialSignature (value) {
@@ -26,8 +25,6 @@ check.toJSON = function () { return 'multisig input' }
 var EMPTY_BUFFER = Buffer.allocUnsafe(0)
 
 function encodeStack (signatures, scriptPubKey) {
-  typeforce([partialSignature], signatures)
-
   if (scriptPubKey) {
     var scriptData = p2mso.decode(scriptPubKey)
 
@@ -53,7 +50,6 @@ function encode (signatures, scriptPubKey) {
 }
 
 function decodeStack (stack, allowIncomplete) {
-  typeforce(check, stack, allowIncomplete)
   return stack.slice(1)
 }
 

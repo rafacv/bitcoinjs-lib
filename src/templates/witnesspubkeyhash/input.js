@@ -1,7 +1,6 @@
 // {signature} {pubKey}
 
 var bscript = require('../../script')
-var typeforce = require('typeforce')
 
 function isCompressedCanonicalPubKey (pubKey) {
   return bscript.isCanonicalPubKey(pubKey) && pubKey.length === 33
@@ -17,20 +16,10 @@ function check (script) {
 check.toJSON = function () { return 'witnessPubKeyHash input' }
 
 function encodeStack (signature, pubKey) {
-  typeforce({
-    signature: bscript.isCanonicalSignature,
-    pubKey: isCompressedCanonicalPubKey
-  }, {
-    signature: signature,
-    pubKey: pubKey
-  })
-
   return [signature, pubKey]
 }
 
 function decodeStack (stack) {
-  typeforce(check, stack)
-
   return {
     signature: stack[0],
     pubKey: stack[1]

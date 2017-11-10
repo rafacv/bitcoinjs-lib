@@ -1,7 +1,6 @@
 var Buffer = require('safe-buffer').Buffer
 var bcrypto = require('./crypto')
 var fastMerkleRoot = require('merkle-lib/fastRoot')
-var typeforce = require('typeforce')
 var types = require('./types')
 var varuint = require('varuint-bitcoin')
 
@@ -150,7 +149,6 @@ Block.calculateTarget = function (bits) {
 }
 
 Block.calculateMerkleRoot = function (transactions) {
-  typeforce([{ getHash: types.Function }], transactions)
   if (transactions.length === 0) throw TypeError('Cannot compute merkle root for zero transactions')
 
   var hashes = transactions.map(function (transaction) {

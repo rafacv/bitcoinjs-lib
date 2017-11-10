@@ -4,7 +4,6 @@ var bs58check = require('bs58check')
 var bscript = require('./script')
 var btemplates = require('./templates')
 var networks = require('./networks')
-var typeforce = require('typeforce')
 var types = require('./types')
 
 function fromBase58Check (address) {
@@ -32,8 +31,6 @@ function fromBech32 (address) {
 }
 
 function toBase58Check (hash, version) {
-  typeforce(types.tuple(types.Hash160bit, types.UInt8), arguments)
-
   var payload = Buffer.allocUnsafe(21)
   payload.writeUInt8(version, 0)
   hash.copy(payload, 1)
